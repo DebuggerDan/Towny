@@ -23,11 +23,11 @@ jobs:
                   java-package: jdk
                   cache: 'maven'
                   
-            # 2. Compile with Maven thingy
-            - name: Compile with Maven
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              run: mvn -B compile test -P no-apidoc
+#             # 2. Compile with Maven thingy
+#             - name: Compile with Maven
+#               env:
+#                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#               run: mvn -B compile test -P no-apidoc
               
             # 3. Setup local Maven package cache to speed up building
             - name: Cache Maven packages
@@ -39,7 +39,7 @@ jobs:
 
             # 4. Build via Maven 
             - name: Build via Maven
-              run: mvn clean package install
+              run: mvn clean package
 
             # 4b. Staging Jar Directories
             - name: Staging Jar Directories
