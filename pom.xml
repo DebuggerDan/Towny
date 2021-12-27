@@ -18,10 +18,10 @@
         </license>
     </licenses>
 
-    <organization>
+<!--     <organization>
         <name>TownyAdvanced</name>
         <url>https://github.com/TownyAdvanced</url>
-    </organization>
+    </organization> -->
 
     <properties>
         <java.version>17</java.version>
@@ -32,13 +32,13 @@
     <!-- For use with GitHub Package Registry -->
     <!-- Requires repo write access, and proper local maven configuration -->
     <!-- https://help.github.com/en/articles/about-github-package-registry -->
-<!--     <distributionManagement>
+     <distributionManagement>
         <repository>
             <id>github</id>
             <name>GitHub TownyAdvanced Apache Maven Packages</name>
             <url>https://maven.pkg.github.com/DebuggerDan/Towny</url>
         </repository>
-    </distributionManagement> -->
+    </distributionManagement>
 
     <scm>
         <connection>scm:git:git://github.com/DebuggerDan/Towny.git</connection>
