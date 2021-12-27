@@ -5,68 +5,43 @@ on:
     pull_request:
         branches-ignore: [l10n_master]
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        strategy:
-            matrix:
-                java: ['17']
-        name: Java (Temurin) ${{ matrix.java }}
-        steps:
-            - uses: actions/checkout@v2
-            
-            # 1. Initialize Eclipse Temurin Env?
-            - name: Set up Eclipse Temurin
-              uses: actions/setup-java@v2
-              with:
-                  distribution: 'temurin'
-                  java-version: ${{ matrix.java }}
-                  java-package: jdk
-                  cache: 'maven'
-                  
-#             # 2. Compile with Maven thingy
-#             - name: Compile with Maven
-#               env:
-#                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#               run: mvn -B compile test -P no-apidoc
-              
-            # 3. Setup local Maven package cache to speed up building
-            - name: Cache Maven packages
-              uses: actions/cache@v2
-              with:
-                path: ~/.m2
-                key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-                restore-keys: ${{ runner.os }}-m2
+  compile:
+    name: Maven compiler
+    runs-on: ubuntu-latest
+    steps:
 
-            # 4. Build via Maven 
-            - name: Build via Maven
-              run: mvn clean package
+    # 1. Check out the current working tree
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-            # 4b. Staging Jar Directories
-            - name: Staging Jar Directories
-              run: mkdir staging && cp target/*.jar staging
+    # 2. Setup Java 17 JDK (Adopt)
+    - name: Java 17 setup
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-package: jdk
+        java-version: '17'
 
-            # 4c. Staging Jars
-            - name: Staging Jars
-              uses: actions/upload-artifact@v2
-              with:
-                  name: Package
-                  path: staging
+    # 3. Setup local Maven package cache to speed up building
+    - name: Cache Maven packages
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
 
-        #     #5. Upload a Build Artifact
-        #     - name: Upload a Build Artifact
-        #       uses: actions/upload-artifact@v2.3.1
-        #       with:
-        #         name: 
-        #         path: .jar
-        #         if-no-files-found: warn
-        #         retention-days:
-
-        #     # 6. Download a Build Artifact
-        #     - name: Download a Build Artifact
-        #       uses: actions/download-artifact@v2.1.0
-        #       with:
-        #         name:
-        #         path:
-        #         # name: #
-        #         # // mcMMO.jar
-        #         #path: # optional
+    # 4. Build via Maven 
+    - name: Build via Maven
+      run: mvn clean package install
+      
+    # 4b. Staging Jar Directories
+    - name: Staging Jar Directories
+      run: mkdir staging && cp target/*.jar staging
+      
+      
+    # 4c. Staging Jars
+    - name: Staging Jars
+      uses: actions/upload-artifact@v2
+      with:
+          name: Package
+          path: staging
